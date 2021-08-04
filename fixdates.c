@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 int main(int argc, char *argv[]) {
@@ -9,7 +10,9 @@ int main(int argc, char *argv[]) {
     }
 
     char buffer[512];
+    char *ptr_to_str;
     FILE *ptr;
+    int counter = 0;
 
     if ((ptr = fopen(argv[1], "r")) == NULL) {
         perror("Cannot open input file.\n");
@@ -17,7 +20,16 @@ int main(int argc, char *argv[]) {
     }
 
     while ((fgets(buffer, sizeof(buffer), ptr) != NULL)) {
-        printf("%s\n", buffer);
+        ptr_to_str = strtok(buffer, ",");
+        counter++;
+        while ((ptr_to_str = strtok(NULL, ",")) != NULL) {
+            counter++;
+            if (counter == 3) {
+                printf("%s\n", ptr_to_str);
+                counter = 0;
+                break;
+            }
+        }
     }
 
     return EXIT_SUCCESS;
