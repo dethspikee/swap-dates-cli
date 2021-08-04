@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     char buffer[512];
     FILE *ptr;
 
-    if ((ptr = open(argv[1]) == NULL)) {
+    if ((ptr = fopen(argv[1], "r")) == NULL) {
         fprintf(stderr, "Cannot open the file: %s\n", argv[1]);
         return EXIT_FAILURE;
     }
