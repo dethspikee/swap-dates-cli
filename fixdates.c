@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     FILE *ptr;
 
     if ((ptr = fopen(argv[1], "r")) == NULL) {
-        fprintf(stderr, "Cannot open the file: %s\n", argv[1]);
+        perror("Cannot open input file.\n");
         return EXIT_FAILURE;
     }
 }
