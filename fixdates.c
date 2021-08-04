@@ -15,4 +15,10 @@ int main(int argc, char *argv[]) {
         perror("Cannot open input file.\n");
         return EXIT_FAILURE;
     }
+
+    while ((fgets(buffer, sizeof(buffer), ptr) != NULL)) {
+        printf("%s\n", buffer);
+    }
+
+    return EXIT_SUCCESS;
 }
