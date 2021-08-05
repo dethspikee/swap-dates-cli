@@ -44,19 +44,19 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FILE *ptr;
+    FILE *fp_read, fp_write;
     char *ptr_to_date;
     char buffer[512];
     int counter = 0;
     int column = 0;
     bool headers_read = false;
 
-    if ((ptr = fopen(argv[optind], "r")) == NULL) {
+    if ((fp_read = fopen(argv[optind], "r")) == NULL) {
         perror("Cannot open input file.\n");
         return EXIT_FAILURE;
     }
 
-    while ((fgets(buffer, sizeof(buffer), ptr) != NULL)) {
+    while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
         if (!headers_read) {
             headers_read = true;
             printf("buffer: %s\n", buffer);
