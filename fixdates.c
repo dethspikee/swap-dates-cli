@@ -39,8 +39,8 @@ int main(int argc, char *argv[]) {
     }
 
     FILE *ptr;
-    char buffer[512];
     char *ptr_to_date;
+    char buffer[512];
     int counter = 0;
     int column = 0;
     bool headers_read = false;
@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
 
     return EXIT_SUCCESS;
 }
-
 
 
 char *swap_date(char *date) {
