@@ -5,12 +5,36 @@
 #include <unistd.h>
 
 
+void show_help(void);
 char *swap_date(char *date);
 
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
+    if (argc > 30) {
         fprintf(stderr, "Incorrect number of arguments.\nusage: fixdates csvfile\n");
+        return EXIT_FAILURE;
+    }
+
+    int opt;
+    int c_flag = false;
+
+    while ((opt = getopt(argc, argv, "c:h")) != -1) {
+        switch (opt) {
+            case 'c':
+                printf("column: %d\n", atoi(optarg));
+                c_flag = true;
+                break;
+            case 'h':
+                show_help();
+                return EXIT_SUCCESS;
+        }
+    }
+
+    if (!c_flag) {
+        fprintf(stderr, "Missing filename option -c\n");
+        return EXIT_FAILURE;
+    } else if (argv[optind] == NULL) {
+        fprintf(stderr, "Must provide csv filename.\n");
         return EXIT_FAILURE;
     }
 
@@ -21,7 +45,7 @@ int main(int argc, char *argv[]) {
     int column = 0;
     bool headers_read = false;
 
-    if ((ptr = fopen(argv[1], "r")) == NULL) {
+    if ((ptr = fopen(argv[optind], "r")) == NULL) {
         perror("Cannot open input file.\n");
         return EXIT_FAILURE;
     }
@@ -42,14 +66,14 @@ int main(int argc, char *argv[]) {
                 counter++;
                 break;
             }
-            if (counter == 50) {
+            if (counter == 2000)
                 break;
             }
         }
-    }
 
     return EXIT_SUCCESS;
 }
+
 
 
 char *swap_date(char *date) {
@@ -65,4 +89,13 @@ char *swap_date(char *date) {
     strcat(buffer, year);
 
     printf("day: %s\n", buffer);
+}
+
+void show_help(void) {
+    printf("usage:\tfixdate -c 3 -dd / file.csv\n\n");
+    printf("\tCreate new csv file based on the input csv file with swapped dates."
+            "\n\tExample: dates in the mm/dd/yyyy format will be changed to dd/mm/yyyy\n\tand vice versa.\n\n");
+    printf("options:\t\tdescription:\n");
+    printf("-c NUMBER\t\tColumn number where dates are located in the input csv.\n");
+    printf("-dd CHAR\t\tDate delimiter. In the date 07/09/1993 -dd will be \"/\".\n");
 }
