@@ -9,15 +9,10 @@ void show_help(void); void validate_field(char *date, char delimiter); char *swa
 
 
 int main(int argc, char *argv[]) {
-    if (argc > 30) {
-        fprintf(stderr, "Incorrect number of arguments.\nusage: fixdates csvfile\n");
-        return EXIT_FAILURE;
-    }
-
-    int opt;
     int c_flag = false;
     int d_flag = false;
     int dob_column = 0;
+    int opt;
     char delimiter;
 
     while ((opt = getopt(argc, argv, "c:d:h")) != -1) {
