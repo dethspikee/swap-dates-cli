@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 
 char *swap_date(char *date);
@@ -16,8 +17,8 @@ int main(int argc, char *argv[]) {
     FILE *ptr;
     char buffer[512];
     char *ptr_to_date;
-    int column = 0;
     int counter = 0;
+    int column = 0;
     bool headers_read = false;
 
     if ((ptr = fopen(argv[1], "r")) == NULL) {
@@ -57,7 +58,7 @@ char *swap_date(char *date) {
     char *day = strtok(NULL, "/");
     char *year = strtok(NULL, "/");
 
-    strncpy(buffer, day, strlen(month));
+    strncpy(buffer, day, strlen(day) + 1);
     strcat(buffer, "/");
     strcat(buffer, month);
     strcat(buffer, "/");
