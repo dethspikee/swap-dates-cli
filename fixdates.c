@@ -6,6 +6,7 @@
 
 
 void show_help(void);
+void validate_field(char *date);
 char *swap_date(char *date);
 
 
@@ -17,12 +18,13 @@ int main(int argc, char *argv[]) {
 
     int opt;
     int c_flag = false;
+    int dob_column = 0;
 
     while ((opt = getopt(argc, argv, "c:h")) != -1) {
         switch (opt) {
             case 'c':
-                printf("column: %d\n", atoi(optarg));
                 c_flag = true;
+                dob_column = atoi(optarg);
                 break;
             case 'h':
                 show_help();
@@ -58,18 +60,22 @@ int main(int argc, char *argv[]) {
 
         ptr_to_date = strtok(buffer, ",");
         column++;
-        while ((ptr_to_date = strtok(NULL, ",")) != NULL) {
-            column++;
-            if (column == 3) {
+        while (ptr_to_date != NULL) {
+            if (column == dob_column) {
+                validate_field(ptr_to_date);
                 swap_date(ptr_to_date);
                 column = 0;
                 counter++;
                 break;
             }
-            if (counter == 2000)
-                break;
-            }
+
+            if (counter == 10)
+                exit(0);
+
+            ptr_to_date = strtok(NULL, ",");
+            column++;
         }
+    }
 
     return EXIT_SUCCESS;
 }
@@ -89,6 +95,19 @@ char *swap_date(char *date) {
 
     printf("day: %s\n", buffer);
 }
+
+
+void validate_field(char *date) {
+    while(*date) {
+        if (*date == '/') {
+            return;
+        }
+        date++;
+    }
+    printf("Invalid file type. Make sure -c NUMBER matches column number in the input csv file.\n");
+    exit(EXIT_FAILURE);
+}
+
 
 void show_help(void) {
     printf("usage:\tfixdate -c 3 -dd / file.csv\n\n");
