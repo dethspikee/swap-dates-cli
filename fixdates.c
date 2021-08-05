@@ -5,9 +5,7 @@
 #include <unistd.h>
 
 
-void show_help(void);
-void validate_field(char *date);
-char *swap_date(char *date);
+void show_help(void); void validate_field(char *date, char delimiter); char *swap_date(char *date);
 
 
 int main(int argc, char *argv[]) {
@@ -18,13 +16,19 @@ int main(int argc, char *argv[]) {
 
     int opt;
     int c_flag = false;
+    int d_flag = false;
     int dob_column = 0;
+    char delimiter;
 
-    while ((opt = getopt(argc, argv, "c:h")) != -1) {
+    while ((opt = getopt(argc, argv, "c:d:h")) != -1) {
         switch (opt) {
             case 'c':
                 c_flag = true;
                 dob_column = atoi(optarg);
+                break;
+            case 'd':
+                d_flag = true;
+                delimiter = *optarg;
                 break;
             case 'h':
                 show_help();
@@ -33,7 +37,10 @@ int main(int argc, char *argv[]) {
     }
 
     if (!c_flag) {
-        fprintf(stderr, "Missing filename option -c\n");
+        fprintf(stderr, "Missing column option -c\n");
+        return EXIT_FAILURE;
+    } else if (!d_flag) {
+        fprintf(stderr, "Missing delimiter option -d\n");
         return EXIT_FAILURE;
     } else if (argv[optind] == NULL) {
         fprintf(stderr, "Must provide csv filename.\n");
@@ -62,7 +69,7 @@ int main(int argc, char *argv[]) {
         column++;
         while (ptr_to_date != NULL) {
             if (column == dob_column) {
-                validate_field(ptr_to_date);
+                validate_field(ptr_to_date, delimiter);
                 swap_date(ptr_to_date);
                 column = 0;
                 counter++;
@@ -97,14 +104,15 @@ char *swap_date(char *date) {
 }
 
 
-void validate_field(char *date) {
+void validate_field(char *date, char delimiter) {
     while(*date) {
-        if (*date == '/') {
+        if (*date == delimiter) {
             return;
         }
         date++;
     }
-    printf("Invalid file type. Make sure -c NUMBER matches column number in the input csv file.\n");
+    printf("Invalid file type. Make sure -c NUMBER matches column number in the input csv file\n"
+            "and -d CHAR matches input date delimiter.\n");
     exit(EXIT_FAILURE);
 }
 
