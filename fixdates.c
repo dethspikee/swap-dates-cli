@@ -5,7 +5,9 @@
 #include <unistd.h>
 
 
-void show_help(void); void validate_field(char *date, char delimiter); char *swap_date(char *date);
+void show_help(void); 
+void validate_field(char *date, char delimiter); 
+char *swap_date(char *date);
 
 
 int main(int argc, char *argv[]) {
@@ -57,12 +59,14 @@ int main(int argc, char *argv[]) {
     while ((fgets(buffer, sizeof(buffer), ptr) != NULL)) {
         if (!headers_read) {
             headers_read = true;
+            printf("buffer: %s\n", buffer);
             continue;
         }
 
         ptr_to_date = strtok(buffer, ",");
         column++;
         while (ptr_to_date != NULL) {
+            printf("%s,", ptr_to_date);
             if (column == dob_column) {
                 validate_field(ptr_to_date, delimiter);
                 swap_date(ptr_to_date);
