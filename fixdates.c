@@ -7,6 +7,7 @@
 
 void show_help(void); 
 void validate_field(char *date, char delimiter); 
+void write_csv(char *field, FILE *fp_write, bool add_delimiter);
 char *swap_date(char *date);
 
 
@@ -44,8 +45,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    FILE *fp_read, fp_write;
-    char *ptr_to_date;
+    FILE *fp_read, *fp_write;
+    char *ptr_to_date, *new_date;
     char buffer[512];
     int counter = 0;
     int column = 0;
@@ -56,23 +57,35 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    if ((fp_write = fopen("testing.csv", "w")) == NULL) {
+        fprintf(stderr, "Error");
+        exit(EXIT_FAILURE);
+    }
+
     while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
         if (!headers_read) {
             headers_read = true;
-            printf("buffer: %s\n", buffer);
+            //printf("buffer: %s\n", buffer);
+            write_csv(buffer, fp_write, false);
+            //exit(0);
             continue;
         }
 
         ptr_to_date = strtok(buffer, ",");
         column++;
         while (ptr_to_date != NULL) {
-            printf("%s,", ptr_to_date);
+            //printf("token: %s\n", ptr_to_date);
             if (column == dob_column) {
+                //printf("day: %s\n", ptr_to_date);
                 validate_field(ptr_to_date, delimiter);
-                swap_date(ptr_to_date);
+                new_date = swap_date(ptr_to_date);
+                write_csv(new_date, fp_write, true);
+                free(new_date);
                 column = 0;
                 counter++;
-                break;
+                //break;
+            } else {
+                write_csv(ptr_to_date, fp_write, true);
             }
 
             if (counter == 10)
@@ -81,29 +94,42 @@ int main(int argc, char *argv[]) {
             ptr_to_date = strtok(NULL, ",");
             column++;
         }
+        write_csv("\n", fp_write, false);
     }
 
     return EXIT_SUCCESS;
 }
 
 
+void write_csv(char *field, FILE *fp_write, bool add_delimiter) {
+    if (add_delimiter) {
+        fprintf(fp_write, "%s,", field);
+    } else {
+        fprintf(fp_write, "%s", field);
+    }
+}
+
 char *swap_date(char *date) {
+    char *test = malloc(100);
     char buffer[32] = {0};
     char *month = strtok(date, "/");
     char *day = strtok(NULL, "/");
     char *year = strtok(NULL, "/");
 
-    strncpy(buffer, day, strlen(day) + 1);
-    strcat(buffer, "/");
-    strcat(buffer, month);
-    strcat(buffer, "/");
-    strcat(buffer, year);
+    strncpy(test, day, strlen(day) + 1);
+    strcat(test, "/");
+    strcat(test, month);
+    strcat(test, "/");
+    strcat(test, year);
 
-    printf("day: %s\n", buffer);
+    printf("day: %s\n", test);
+
+    return test;
 }
 
 
 void validate_field(char *date, char delimiter) {
+    //printf("field: %s\n", date);
     while(*date) {
         if (*date == delimiter) {
             return;
@@ -112,7 +138,7 @@ void validate_field(char *date, char delimiter) {
     }
     printf("Invalid file type. Make sure -c NUMBER matches column number in the input csv file\n"
             "and -d CHAR matches input date delimiter.\n");
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
 }
 
 
