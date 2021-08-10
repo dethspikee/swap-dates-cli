@@ -65,7 +65,6 @@ int main(int argc, char *argv[]) {
     while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
         if (!headers_read) {
             headers_read = true;
-            //printf("buffer: %s\n", buffer);
             write_csv(buffer, fp_write, false);
             //exit(0);
             continue;
@@ -74,26 +73,23 @@ int main(int argc, char *argv[]) {
         ptr_to_date = strtok(buffer, ",");
         column++;
         while (ptr_to_date != NULL) {
-            //printf("token: %s\n", ptr_to_date);
             if (column == dob_column) {
-                //printf("day: %s\n", ptr_to_date);
                 validate_field(ptr_to_date, delimiter);
                 new_date = swap_date(ptr_to_date);
                 write_csv(new_date, fp_write, true);
                 free(new_date);
-                column = 0;
                 counter++;
-                //break;
             } else {
                 write_csv(ptr_to_date, fp_write, true);
+                column++;
             }
 
-            if (counter == 10)
-                exit(0);
+            //if (counter == 10)
+                //exit(0);
 
             ptr_to_date = strtok(NULL, ",");
-            column++;
         }
+        column = 0;
         write_csv("\n", fp_write, false);
     }
 
@@ -122,14 +118,11 @@ char *swap_date(char *date) {
     strcat(test, "/");
     strcat(test, year);
 
-    printf("day: %s\n", test);
-
     return test;
 }
 
 
 void validate_field(char *date, char delimiter) {
-    //printf("field: %s\n", date);
     while(*date) {
         if (*date == delimiter) {
             return;
@@ -138,7 +131,7 @@ void validate_field(char *date, char delimiter) {
     }
     printf("Invalid file type. Make sure -c NUMBER matches column number in the input csv file\n"
             "and -d CHAR matches input date delimiter.\n");
-    //exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
 
 
