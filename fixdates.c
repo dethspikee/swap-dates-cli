@@ -14,6 +14,7 @@ char *swap_date(char *date);
 int main(int argc, char *argv[]) {
     int c_flag = false;
     int d_flag = false;
+    int h_flag = false;
     int dob_column = 0;
     int opt;
     char delimiter;
@@ -29,8 +30,8 @@ int main(int argc, char *argv[]) {
                 delimiter = *optarg;
                 break;
             case 'h':
-                show_help();
-                return EXIT_SUCCESS;
+                h_flag = true;
+                break;
         }
     }
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]) {
     char buffer[512];
     int counter = 0;
     int column = 0;
-    bool headers_read = false;
+    //bool headers_read = false;
 
     if ((fp_read = fopen(argv[optind], "r")) == NULL) {
         perror("Cannot open input file.\n");
@@ -63,9 +64,10 @@ int main(int argc, char *argv[]) {
     }
 
     while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
-        if (!headers_read) {
-            headers_read = true;
+        if (h_flag) {
+            printf("H FLAG!\n");
             write_csv(buffer, fp_write);
+            h_flag = false;
             continue;
         }
 
