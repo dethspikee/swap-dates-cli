@@ -69,7 +69,6 @@ int main(int argc, char *argv[]) {
 
     while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
         if (h_flag) {
-            printf("H FLAG!\n");
             write_csv(buffer, fp_write);
             h_flag = false;
             continue;
