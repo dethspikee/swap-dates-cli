@@ -7,7 +7,7 @@
 
 void show_help(void); 
 void validate_field(char *date, char delimiter); 
-void write_csv(char *field, FILE *fp_write, bool add_delimiter);
+void write_csv(char *field, FILE *fp_write);
 char *swap_date(char *date);
 
 
@@ -65,8 +65,7 @@ int main(int argc, char *argv[]) {
     while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
         if (!headers_read) {
             headers_read = true;
-            write_csv(buffer, fp_write, false);
-            //exit(0);
+            write_csv(buffer, fp_write);
             continue;
         }
 
@@ -76,47 +75,67 @@ int main(int argc, char *argv[]) {
             if (column == dob_column) {
                 validate_field(ptr_to_date, delimiter);
                 new_date = swap_date(ptr_to_date);
-                write_csv(new_date, fp_write, true);
+                write_csv(new_date, fp_write);
                 free(new_date);
                 counter++;
+                ptr_to_date = strtok(NULL, ",");
             } else {
-                write_csv(ptr_to_date, fp_write, true);
-                column++;
+                write_csv(ptr_to_date, fp_write);
+                ptr_to_date = strtok(NULL, ",");
             }
 
             //if (counter == 10)
                 //exit(0);
 
-            ptr_to_date = strtok(NULL, ",");
+            if (ptr_to_date != NULL) {
+                write_csv(",", fp_write);
+            }
+            column++;
         }
         column = 0;
-        write_csv("\n", fp_write, false);
     }
 
     return EXIT_SUCCESS;
 }
 
 
-void write_csv(char *field, FILE *fp_write, bool add_delimiter) {
-    if (add_delimiter) {
-        fprintf(fp_write, "%s,", field);
-    } else {
-        fprintf(fp_write, "%s", field);
-    }
+void write_csv(char *field, FILE *fp_write) {
+    fprintf(fp_write, "%s", field);
 }
 
 char *swap_date(char *date) {
     char *test = malloc(100);
-    char buffer[32] = {0};
-    char *month = strtok(date, "/");
-    char *day = strtok(NULL, "/");
-    char *year = strtok(NULL, "/");
+    char *day, *year;
+    char buffer[3] = {0};
+    char buffer2[30] = {0};
+    int i;
 
-    strncpy(test, day, strlen(day) + 1);
-    strcat(test, "/");
-    strcat(test, month);
-    strcat(test, "/");
-    strcat(test, year);
+    for (i = 0; *date != '\0'; date++, i++) {
+        if (*date == '/') {
+            buffer[i] = '\0';
+            day = date;
+            day++;
+            break;
+        }
+        buffer[i] = *date;
+    }
+
+    for (i = 0; *day != '\0'; day++, i++) {
+        if (*day == '/') {
+            buffer2[i] = '\0';
+            year = day;
+            year++;
+            break;
+        }
+        buffer2[i] = *day;
+    }
+
+    strcat(buffer2, "/");
+    strcat(buffer2, buffer);
+    strcat(buffer2, "/");
+    strcat(buffer2, year);
+
+    memcpy(test, buffer2, sizeof(buffer2));
 
     return test;
 }
