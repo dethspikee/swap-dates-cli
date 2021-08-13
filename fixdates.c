@@ -111,7 +111,11 @@ void write_csv(char *field, FILE *fp_write) {
 }
 
 char *swap_date(char *date) {
-    char *test = malloc(100);
+    char *new_date_buffer = malloc(100);
+    if (new_date_buffer == NULL) {
+        fprintf(stderr, "Error allocating memory with malloc.\n");
+        exit(EXIT_FAILURE);
+    }
     char *day, *year;
     char buffer[3] = {0};
     char buffer2[30] = {0};
@@ -142,9 +146,9 @@ char *swap_date(char *date) {
     strcat(buffer2, "/");
     strcat(buffer2, year);
 
-    memcpy(test, buffer2, sizeof(buffer2));
+    memcpy(new_date_buffer, buffer2, sizeof(buffer2));
 
-    return test;
+    return new_date_buffer;
 }
 
 
