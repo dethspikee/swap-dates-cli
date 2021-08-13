@@ -5,6 +5,10 @@
 #include <unistd.h>
 
 
+#define FILENAME_SIZE 64
+#define LINE_BUFFER_SIZE 512
+
+
 void show_help(void); 
 void validate_field(char *date, char delimiter); 
 void write_csv(char *field, FILE *fp_write);
@@ -52,9 +56,9 @@ int main(int argc, char *argv[]) {
     }
 
     FILE *fp_read, *fp_write;
-    char *ptr_to_date, *new_date;
-    char filename[64];
-    char buffer[512];
+    char *next_field_ptr, *new_date;
+    char filename[FILENAME_SIZE];
+    char line_buffer[LINE_BUFFER_SIZE];
     int counter = 0;
     int column = 0;
 
@@ -71,29 +75,29 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    while ((fgets(buffer, sizeof(buffer), fp_read) != NULL)) {
+    while ((fgets(line_buffer, sizeof(line_buffer), fp_read) != NULL)) {
         if (h_flag) {
-            write_csv(buffer, fp_write);
+            write_csv(line_buffer, fp_write);
             h_flag = false;
             continue;
         }
 
-        ptr_to_date = strtok(buffer, ",");
+        next_field_ptr = strtok(line_buffer, ",");
         column++;
-        while (ptr_to_date != NULL) {
+        while (next_field_ptr != NULL) {
             if (column == dob_column) {
-                validate_field(ptr_to_date, delimiter);
-                new_date = swap_date(ptr_to_date);
+                validate_field(next_field_ptr, delimiter);
+                new_date = swap_date(next_field_ptr);
                 write_csv(new_date, fp_write);
                 free(new_date);
                 counter++;
-                ptr_to_date = strtok(NULL, ",");
+                next_field_ptr = strtok(NULL, ",");
             } else {
-                write_csv(ptr_to_date, fp_write);
-                ptr_to_date = strtok(NULL, ",");
+                write_csv(next_field_ptr, fp_write);
+                next_field_ptr = strtok(NULL, ",");
             }
 
-            if (ptr_to_date != NULL) {
+            if (next_field_ptr != NULL) {
                 write_csv(",", fp_write);
             }
             column++;
