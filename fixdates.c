@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
     char buffer[512];
     int counter = 0;
     int column = 0;
-    //bool headers_read = false;
 
     if ((fp_read = fopen(argv[optind], "r")) == NULL) {
         perror("Cannot open input file.\n");
