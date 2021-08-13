@@ -12,6 +12,11 @@ char *swap_date(char *date);
 
 
 int main(int argc, char *argv[]) {
+    if (argc == 1) {
+        show_help();
+        exit(EXIT_SUCCESS);
+    }
+
     int c_flag = false;
     int d_flag = false;
     int h_flag = false;
