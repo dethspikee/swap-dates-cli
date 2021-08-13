@@ -91,9 +91,6 @@ int main(int argc, char *argv[]) {
                 ptr_to_date = strtok(NULL, ",");
             }
 
-            //if (counter == 10)
-                //exit(0);
-
             if (ptr_to_date != NULL) {
                 write_csv(",", fp_write);
             }
