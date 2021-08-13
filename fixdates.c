@@ -53,16 +53,20 @@ int main(int argc, char *argv[]) {
 
     FILE *fp_read, *fp_write;
     char *ptr_to_date, *new_date;
+    char filename[64];
     char buffer[512];
     int counter = 0;
     int column = 0;
+
+    strcpy(filename, "new-");
+    strcat(filename, argv[optind]);
 
     if ((fp_read = fopen(argv[optind], "r")) == NULL) {
         perror("Cannot open input file.\n");
         return EXIT_FAILURE;
     }
 
-    if ((fp_write = fopen("testing.csv", "w")) == NULL) {
+    if ((fp_write = fopen(filename, "w")) == NULL) {
         fprintf(stderr, "Error");
         exit(EXIT_FAILURE);
     }
