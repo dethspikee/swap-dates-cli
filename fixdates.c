@@ -162,7 +162,7 @@ void validate_field(char *date, char delimiter) {
 
 
 void show_help(void) {
-    printf("usage:\tfixdate -c 3 -dd / file.csv\n\n");
+    printf("usage:\tfixdate -c 3 -d / file.csv\n\n");
     printf("\tCreate new csv file based on the input csv file with swapped dates."
             "\n\tExample: dates in the mm/dd/yyyy format will be changed to dd/mm/yyyy\n\tand vice versa.\n\n");
     printf("options:\t\tdescription:\n");
