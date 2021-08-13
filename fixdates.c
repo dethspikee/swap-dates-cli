@@ -105,6 +105,10 @@ void write_csv(char *field, FILE *fp_write) {
     fprintf(fp_write, "%s", field);
 }
 
+
+/*
+ * Swap mm/dd to dd/mm and vice versa in the date field.
+ */
 char *swap_date(char *date) {
     char *new_date_buffer = malloc(100);
     if (new_date_buffer == NULL) {
@@ -144,6 +148,10 @@ char *swap_date(char *date) {
 }
 
 
+/*
+ * Validate each date field to see if the delimiter provided by the user in the
+ * program arguments (-d option) matches the delimiter used in the date field.
+ */
 void validate_field(char *date, char delimiter) {
     while(*date) {
         if (*date == delimiter) {
@@ -157,6 +165,9 @@ void validate_field(char *date, char delimiter) {
 }
 
 
+/*
+ * Display help menu for the program.
+ */
 void show_help(void) {
     printf("usage:\tfixdate -c 3 -d / file.csv\n\n");
     printf("\tCreate new csv file based on the input csv file with swapped dates."
