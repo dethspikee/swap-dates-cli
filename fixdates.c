@@ -112,7 +112,6 @@ char *swap_date(char *date) {
         fprintf(stderr, "Error allocating memory with malloc.\n");
         exit(EXIT_FAILURE);
     }
-    char *day, *year;
     char buffer[3] = {0};
     char buffer2[30] = {0};
     int i;
@@ -120,27 +119,25 @@ char *swap_date(char *date) {
     for (i = 0; *date != '\0'; date++, i++) {
         if (*date == '/') {
             buffer[i] = '\0';
-            day = date;
-            day++;
+            date++;
             break;
         }
         buffer[i] = *date;
     }
 
-    for (i = 0; *day != '\0'; day++, i++) {
-        if (*day == '/') {
+    for (i = 0; *date != '\0'; date++, i++) {
+        if (*date == '/') {
             buffer2[i] = '\0';
-            year = day;
-            year++;
+            date++;
             break;
         }
-        buffer2[i] = *day;
+        buffer2[i] = *date;
     }
 
     strcat(buffer2, "/");
     strcat(buffer2, buffer);
     strcat(buffer2, "/");
-    strcat(buffer2, year);
+    strcat(buffer2, date);
 
     memcpy(new_date_buffer, buffer2, sizeof(buffer2));
 
